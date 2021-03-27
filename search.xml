@@ -8,7 +8,6 @@
 
 <p>可以写成这样的形式</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = [<span class="number">1</span>, -<span class="number">1</span>][x == <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
-
 ]]></content>
       <categories>
         <category>Python</category>
@@ -76,112 +75,6 @@
       <tags>
         <tag>Python</tag>
         <tag>DS&amp;A</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python 日期格式，时间戳之间转换</title>
-    <url>/Python-%E4%B8%AD%E7%9A%84-os-path-dirname-file-%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
-    <content><![CDATA[<h3 id="获取当前时间戳"><a href="#获取当前时间戳" class="headerlink" title="获取当前时间戳"></a>获取当前时间戳</h3><ul>
-<li>方法：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">now &#x3D; time.time()</span><br><span class="line">print(&#39;now:&#39;, now, &#39;\n&#39;, type(now))</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>输出结果：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">now: 1498926743.1411922 </span><br><span class="line"> &lt;class &#39;float&#39;&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="获取当前日期"><a href="#获取当前日期" class="headerlink" title="获取当前日期"></a>获取当前日期</h3><span id="more"></span>
-
-<ul>
-<li>方法：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">datenow &#x3D; datetime.datetime.now()</span><br><span class="line">print(&#39;datenow:&#39;, datenow, &#39;\n&#39;, type(datenow))</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>输出结果：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">datenow: 2017-07-02 00:34:35.272749 </span><br><span class="line"> &lt;class &#39;datetime.datetime&#39;&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="字符串格式更改"><a href="#字符串格式更改" class="headerlink" title="字符串格式更改"></a>字符串格式更改</h3><p>如a = “2017-07-02 00:34:35”，想改为 a = “2017/07/02 00:34:35”</p>
-<ul>
-<li>方法：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a &#x3D; &quot;2013-10-10 23:40:00&quot;</span><br><span class="line">timeArray &#x3D; time.strptime(a, &quot;%Y-%m-%d %H:%M:%S&quot;)                # 先转换为时间数组</span><br><span class="line">otherStyleTime &#x3D; time.strftime(&quot;%Y&#x2F;%m&#x2F;%d %H:%M:%S&quot;, timeArray)   # 转换为其他格式</span><br><span class="line">print(&#39;otherStyleTime:&#39;, otherStyleTime)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>输出结果：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">otherStyleTime: 2017&#x2F;07&#x2F;02 00:34:35</span><br></pre></td></tr></table></figure>
-
-<h3 id="将字符串的时间转换为时间戳"><a href="#将字符串的时间转换为时间戳" class="headerlink" title="将字符串的时间转换为时间戳"></a>将字符串的时间转换为时间戳</h3><ul>
-<li>方法：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a &#x3D; &quot;2017-07-02 00:34:35&quot; </span><br><span class="line">timeArray &#x3D; time.strptime(a, &quot;%Y-%m-%d %H:%M:%S&quot;)            # 将其转换为时间数组</span><br><span class="line">timeStamp &#x3D; int(time.mktime(timeArray))                      # 转换为时间戳</span><br><span class="line">print(&#39;timesStamp:&#39;, timeStamp)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>输出结果：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">timesStamp: 1498926875</span><br></pre></td></tr></table></figure>
-
-<h3 id="时间戳转换为指定格式日期"><a href="#时间戳转换为指定格式日期" class="headerlink" title="时间戳转换为指定格式日期"></a>时间戳转换为指定格式日期</h3><ul>
-<li>方法一：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">timeStamp &#x3D; 1498927046</span><br><span class="line">timeArray &#x3D; time.localtime(timeStamp)                              # 利用localtime()转换为时间数组</span><br><span class="line">otherStyleTime &#x3D; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;, timeArray)     # 格式化为需要的格式</span><br><span class="line">print(&#39;otherStyleTime:&#39;, otherStyleTime)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>方法二：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">timeStamp &#x3D; 1498927046</span><br><span class="line">dateArray &#x3D; datetime.datetime.fromtimestamp(timeStamp)</span><br><span class="line">otherStyleTime &#x3D; dateArray.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">print(&#39;otherStyleTime:&#39;, otherStyleTime)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>输出结果：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">otherStyleTime: 2017-07-02 00:37:26</span><br></pre></td></tr></table></figure>
-
-<h3 id="获取当前时间并转换为指定日期格式"><a href="#获取当前时间并转换为指定日期格式" class="headerlink" title="获取当前时间并转换为指定日期格式"></a>获取当前时间并转换为指定日期格式</h3><ul>
-<li>方法一：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">now &#x3D; int(time.time())                                             # 获得当前时间时间戳</span><br><span class="line">timeArray &#x3D; time.localtime(now)</span><br><span class="line">StyleTime &#x3D; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;, timeArray)</span><br><span class="line">print(&#39;StyleTime:&#39;, StyleTime)  </span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>方法二：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">now &#x3D; datetime.datetime.now()                                 # 获得当前时间，这是时间数组格式</span><br><span class="line">StyleTime &#x3D; now.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)                 # 转换为指定的格式</span><br><span class="line">print(&#39;StyleTime:&#39;, StyleTime)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>输出结果：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">StyleTime: 2017-07-02 00:16:30</span><br></pre></td></tr></table></figure>
-
-<h3 id="获得三天前的时间"><a href="#获得三天前的时间" class="headerlink" title="获得三天前的时间"></a>获得三天前的时间</h3><ul>
-<li>方法:</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">threeDayAgo &#x3D; (datetime.datetime.now() - datetime.timedelta(days &#x3D; 3))   # 先获得时间数组格式的日期</span><br><span class="line">timeStamp &#x3D; int(time.mktime(threeDayAgo.timetuple()))                    # 转换为时间戳</span><br><span class="line">threeDayAgo &#x3D; threeDayAgo.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)                  # 转换为其他字符串格式</span><br><span class="line">print(&#39;threeDayAgo:&#39;, threeDayAgo)</span><br></pre></td></tr></table></figure>
-
-<p>timedelta()的参数有:days, seconds, microseconds, milliseconds, minutes, hours, weeks</p>
-<ul>
-<li>输出结果：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">threeDayAgo: 2017-06-29 00:21:04</span><br></pre></td></tr></table></figure>
-
-<h3 id="给定时间戳-计算该时间的几天前时间"><a href="#给定时间戳-计算该时间的几天前时间" class="headerlink" title="给定时间戳,计算该时间的几天前时间:"></a>给定时间戳,计算该时间的几天前时间:</h3><ul>
-<li>方法:</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">timeStamp &#x3D; 1498926852</span><br><span class="line">dateArray &#x3D; datetime.datetime.fromtimestamp(timeStamp)  # 先转换为datetime</span><br><span class="line">threeDayAgo &#x3D; dateArray - datetime.timedelta(days&#x3D;3)</span><br><span class="line">print(&#39;threeDayAgo:&#39;, threeDayAgo)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>输出结果：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">threeDayAgo: 2017-06-28 16:34:12</span><br></pre></td></tr></table></figure>
-
-<p>参考上面，可以转换为其他的任意格式</p>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -364,7 +257,6 @@ Kafka 在后台还有定时任务会定期地检查老的日志段是否能够�
 <h3 id="术语示意图"><a href="#术语示意图" class="headerlink" title="术语示意图"></a>术语示意图</h3><p align='center'>
     <img data-src='https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_1.jpg'>
 </p>
-
 ]]></content>
       <categories>
         <category>Kafka</category>
@@ -685,7 +577,6 @@ select/epoll 一旦监测到 FD 上有请求到达时，就会触发相应的事
 <div style="text-align:center">
     <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%202_3.jpg" width="500">
 </div>
-
 ]]></content>
       <categories>
         <category>Redis</category>
@@ -918,7 +809,6 @@ bgsave 子进程运行后，开始读取主线程的内存数据，并把它们�
 2. 如果允许分钟级别的数据丢失，可以只使用 RDB；<br>
 3. 如果只用 AOF，优先使用 everysec 的配置选项，因为它在可靠性和性能之间取了一个平衡。
 </pre>
-
 ]]></content>
       <categories>
         <category>Redis</category>
@@ -940,7 +830,6 @@ bgsave 子进程运行后，开始读取主线程的内存数据，并把它们�
 
 <p>递归函数结束的条件：是当栈为空或者栈里只有一个元素的时候，return。</p>
 <h3 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverse_stack</span>(<span class="params">s</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(s) == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    temp1 = s.pop()</span><br><span class="line">    reverse_stack(s)</span><br><span class="line">    temp2 = s.pop()</span><br><span class="line">    reverse_stack(s)</span><br><span class="line">    s.append(temp1)</span><br><span class="line">    reverse_stack(s)</span><br><span class="line">    s.append(temp2)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    stack = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</span><br><span class="line">    reverse_stack(stack)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;翻转后出栈的顺序为：&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(stack)</span><br></pre></td></tr></table></figure>
-
 ]]></content>
       <categories>
         <category>DS&amp;A</category>
