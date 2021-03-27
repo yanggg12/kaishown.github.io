@@ -192,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yxudong.github.io/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/">
+    <link itemprop="mainEntityOfPage" href="https://yxudong.github.io/Python-%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%EF%BC%8C%E6%97%B6%E9%97%B4%E6%88%B3%E4%B9%8B%E9%97%B4%E8%BD%AC%E6%8D%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -206,345 +206,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/" class="post-title-link" itemprop="url">极客时间 - 《Redis核心技术与实战》 学习笔记 1</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-09-28 14:06:44" itemprop="dateCreated datePublished" datetime="2020-09-28T14:06:44+08:00">2020-09-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-24 14:37:22" itemprop="dateModified" datetime="2021-03-24T14:37:22+08:00">2021-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="数据结构：快速的-Redis-有哪些慢操作？"><a href="#数据结构：快速的-Redis-有哪些慢操作？" class="headerlink" title="数据结构：快速的 Redis 有哪些慢操作？"></a>数据结构：快速的 Redis 有哪些慢操作？</h3><hr>
-<ul>
-<li>Redis 表现突出的原因</li>
-</ul>
-<pre style="font-size:0.9em; color:#666666;">
-一方面，这是因为它是内存数据库，所有操作都在内存上完成，内存的访问速度本身就很快。<br>
-另一方面，这要归功于它的数据结构。
-这是因为，键值对是按一定的数据结构来组织的，操作键值对最终就是对数据结构进行增删改查操作，
-所以高效的数据结构是 Redis 快速处理数据的基础。
-</pre>
-
-<ul>
-<li>底层数据结构一共有 6 种，分别是简单动态字符串、双向链表、压缩列表、哈希表、跳表和整数数组。</li>
-</ul>
-<div style="text-align:center">
-    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_1.jpg" width="500" align=center>
-</div><br>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yxudong.github.io/uWSGI%E3%80%81WSGI-%E5%92%8C-uwsgi/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Yxd">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yxd's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/uWSGI%E3%80%81WSGI-%E5%92%8C-uwsgi/" class="post-title-link" itemprop="url">uWSGI、WSGI 和 uwsgi</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-08-16 00:46:06" itemprop="dateCreated datePublished" datetime="2019-08-16T00:46:06+08:00">2019-08-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-25 19:48:54" itemprop="dateModified" datetime="2021-03-25T19:48:54+08:00">2021-03-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="图解"><a href="#图解" class="headerlink" title="图解"></a>图解</h3><p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/uWSGI%E3%80%81WSGI%20%E5%92%8C%20uwsgi_1.jpg" alt="image"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/uWSGI%E3%80%81WSGI-%E5%92%8C-uwsgi/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yxudong.github.io/Dijkstra-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95-Python-%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Yxd">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yxd's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Dijkstra-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95-Python-%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">Dijkstra 最短路径算法 Python 实现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-06-27 23:13:35" itemprop="dateCreated datePublished" datetime="2019-06-27T23:13:35+08:00">2019-06-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-27 15:01:53" itemprop="dateModified" datetime="2021-03-27T15:01:53+08:00">2021-03-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DS-A/" itemprop="url" rel="index"><span itemprop="name">DS&A</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>使用 Python 实现 Dijkstra 最短路径算法</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/Dijkstra-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95-Python-%E5%AE%9E%E7%8E%B0/">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yxudong.github.io/Python-1-1-x-0-%E5%86%99%E6%B3%95%E8%A7%A3%E9%87%8A%E5%92%8C%E7%94%A8%E5%A4%84/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Yxd">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yxd's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Python-1-1-x-0-%E5%86%99%E6%B3%95%E8%A7%A3%E9%87%8A%E5%92%8C%E7%94%A8%E5%A4%84/" class="post-title-link" itemprop="url">Python [1, -1][x == 0] 写法解释和用处</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-02-03 17:56:44" itemprop="dateCreated datePublished" datetime="2019-02-03T17:56:44+08:00">2019-02-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-24 14:37:12" itemprop="dateModified" datetime="2021-03-24T14:37:12+08:00">2021-03-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h3><p>这种写法通俗形式为 <strong>[条件为假, 条件为真][判断条件]</strong><br>在 Python 中，布尔型 True 转变为整数等于 1，False 转变为整数等于 0<br>所以条件为真时，返回第二个数，条件为假时，返回第一个数</p>
-<h3 id="用处"><a href="#用处" class="headerlink" title="用处"></a>用处</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> x == <span class="number">0</span>:</span><br><span class="line">    a = -<span class="number">1</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    a = <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p>可以写成这样的形式</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = [<span class="number">1</span>, -<span class="number">1</span>][x == <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yxudong.github.io/Python-%E4%B8%AD%E7%9A%84-os-path-dirname-file-%E7%9A%84%E4%BD%BF%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Yxd">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yxd's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/Python-%E4%B8%AD%E7%9A%84-os-path-dirname-file-%E7%9A%84%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">Python 日期格式，时间戳之间转换</a>
+            <a href="/Python-%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%EF%BC%8C%E6%97%B6%E9%97%B4%E6%88%B3%E4%B9%8B%E9%97%B4%E8%BD%AC%E6%8D%A2/" class="post-title-link" itemprop="url">Python 日期格式，时间戳之间转换</a>
         </h2>
 
         <div class="post-meta">
@@ -561,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-24 14:44:32" itemprop="dateModified" datetime="2021-03-24T14:44:32+08:00">2021-03-24</time>
+                <time title="修改时间：2021-03-24 14:44:20" itemprop="dateModified" datetime="2021-03-24T14:44:20+08:00">2021-03-24</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -597,7 +259,7 @@
 <h3 id="获取当前日期"><a href="#获取当前日期" class="headerlink" title="获取当前日期"></a>获取当前日期</h3>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/Python-%E4%B8%AD%E7%9A%84-os-path-dirname-file-%E7%9A%84%E4%BD%BF%E7%94%A8/#more" rel="contents">
+              <a class="btn" href="/Python-%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%EF%BC%8C%E6%97%B6%E9%97%B4%E6%88%B3%E4%B9%8B%E9%97%B4%E8%BD%AC%E6%8D%A2/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -620,7 +282,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
   </nav>
 
 
@@ -824,6 +486,10 @@
 
   
 
+  
+  
+
+  <script async src="/js/cursor/fireworks.js"></script>
 
   <script src="/lib/live2d-widget/autoload.js"></script>
 </body>
