@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="google-site-verification" content="SO8jlY8yDJsvenFPB1vGvI2P2UfX9ECKyIUYN7G5TU8">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yxudong.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="什么是 KafkaApache Kafka 是一款开源的消息引擎系统。  Kafka 消息格式Kafka 使用的是纯二进制字节序列。  Kafka 支持的消息引擎模型Kafka 同时支持两种消息引擎模型，点对点模型和发布 &#x2F; 订阅模型。  Topic 含义在 Kafka 中，发布订阅的对象是主题（Topic），可以为每个业务、每个应用甚至是每类数据都创建专属的主题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="极客时间 - 《Kafka核心技术与实战》 学习笔记 1">
+<meta property="og:url" content="https://yxudong.github.io/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/index.html">
+<meta property="og:site_name" content="Yxd&#39;s Blog">
+<meta property="og:description" content="什么是 KafkaApache Kafka 是一款开源的消息引擎系统。  Kafka 消息格式Kafka 使用的是纯二进制字节序列。  Kafka 支持的消息引擎模型Kafka 同时支持两种消息引擎模型，点对点模型和发布 &#x2F; 订阅模型。  Topic 含义在 Kafka 中，发布订阅的对象是主题（Topic），可以为每个业务、每个应用甚至是每类数据都创建专属的主题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_1.jpg">
+<meta property="article:published_time" content="2021-03-17T11:58:44.000Z">
+<meta property="article:modified_time" content="2021-03-25T11:47:12.898Z">
+<meta property="article:author" content="Yxd">
+<meta property="article:tag" content="Kafka">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_1.jpg">
+
+<link rel="canonical" href="https://yxudong.github.io/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>极客时间 - 《Kafka核心技术与实战》 学习笔记 1 | Yxd's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yxd's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yxudong.github.io/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Yxd">
+      <meta itemprop="description" content="个人博客记录，涵盖 Kafka，Redis，MySQL，Python，Go，数据结构和算法（DS&A），面试（interview）等等">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yxd's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          极客时间 - 《Kafka核心技术与实战》 学习笔记 1
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-17 19:58:44" itemprop="dateCreated datePublished" datetime="2021-03-17T19:58:44+08:00">2021-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-25 19:47:12" itemprop="dateModified" datetime="2021-03-25T19:47:12+08:00">2021-03-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="什么是-Kafka"><a href="#什么是-Kafka" class="headerlink" title="什么是 Kafka"></a>什么是 Kafka</h3><pre><code>Apache Kafka 是一款开源的消息引擎系统。
+</code></pre>
+<h3 id="Kafka-消息格式"><a href="#Kafka-消息格式" class="headerlink" title="Kafka 消息格式"></a>Kafka 消息格式</h3><pre><code>Kafka 使用的是纯二进制字节序列。
+</code></pre>
+<h3 id="Kafka-支持的消息引擎模型"><a href="#Kafka-支持的消息引擎模型" class="headerlink" title="Kafka 支持的消息引擎模型"></a>Kafka 支持的消息引擎模型</h3><pre><code>Kafka 同时支持两种消息引擎模型，点对点模型和发布 / 订阅模型。
+</code></pre>
+<h3 id="Topic-含义"><a href="#Topic-含义" class="headerlink" title="Topic 含义"></a>Topic 含义</h3><pre><code>在 Kafka 中，发布订阅的对象是主题（Topic），可以为每个业务、每个应用甚至是每类数据都创建专属的主题。
+</code></pre>
+<span id="more"></span>
+
+<h3 id="Producer-和-Consumer-含义"><a href="#Producer-和-Consumer-含义" class="headerlink" title="Producer 和 Consumer 含义"></a>Producer 和 Consumer 含义</h3><pre><code>向主题发布消息的客户端应用程序称为生产者（Producer），生产者程序通常持续不断地向一个或多个主题发送消息，
+而订阅这些主题消息的客户端应用程序就被称为消费者（Consumer）。
+和生产者类似，消费者也能够同时订阅多个主题的消息。生产者和消费者统称为客户端（Clients）。
+</code></pre>
+<h3 id="Broker-含义"><a href="#Broker-含义" class="headerlink" title="Broker 含义"></a>Broker 含义</h3><pre><code>Kafka 的服务器端由被称为 Broker 的服务进程构成，即一个 Kafka 集群由多个 Broker 组成，
+Broker 负责接收和处理客户端发送过来的请求，以及对消息进行持久化。
+
+虽然多个 Broker 进程能够运行在同一台机器上，但更常见的做法是将不同的 Broker 分散运行在不同的机器上，
+这样如果集群中某一台机器宕机，即使在它上面运行的所有 Broker 进程都挂掉了，其他机器上的 Broker 也依然能够对外提供服务。
+这其实就是 Kafka 提供高可用的手段之一。
+</code></pre>
+<h3 id="Replication-含义"><a href="#Replication-含义" class="headerlink" title="Replication 含义"></a>Replication 含义</h3><pre><code>实现高可用的另一个手段就是备份机制（Replication）。
+备份的思想很简单，就是把相同的数据拷贝到多台机器上，而这些相同的数据拷贝在 Kafka 中被称为副本（Replica）。
+
+Kafka 定义了两类副本：领导者副本（Leader Replica）和追随者副本（Follower Replica）。
+前者对外提供服务，这里的对外指的是与客户端程序进行交互；而后者只是被动地追随领导者副本而已，不能与外界进行交互。
+
+副本的工作机制也很简单：生产者总是向领导者副本写消息；而消费者总是从领导者副本读消息。
+至于追随者副本，它只做一件事：向领导者副本发送请求，请求领导者把最新生产的消息发给它，这样它能保持与领导者的同步。
+</code></pre>
+<h3 id="Partitioning-含义"><a href="#Partitioning-含义" class="headerlink" title="Partitioning 含义"></a>Partitioning 含义</h3><pre><code>Kafka 中的分区机制指的是将每个主题划分成多个分区（Partition），每个分区是一组有序的消息日志。
+生产者生产的每条消息只会被发送到一个分区中，也就是说如果向一个双分区的主题发送一条消息，
+这条消息要么在分区 0 中，要么在分区 1 中。
+Kafka 的分区编号是从 0 开始的，如果 Topic 有 100 个分区，那么它们的分区号就是从 0 到 99。
+</code></pre>
+<h3 id="副本如何与分区联系在一起"><a href="#副本如何与分区联系在一起" class="headerlink" title="副本如何与分区联系在一起"></a>副本如何与分区联系在一起</h3><pre><code>副本是在分区这个层级定义的。
+每个分区下可以配置若干个副本，其中只能有 1 个领导者副本和 N-1 个追随者副本。
+生产者向分区写入消息，每条消息在分区中的位置信息由一个叫位移（Offset）的数据来表征。
+分区位移总是从 0 开始，假设一个生产者向一个空分区写入了 10 条消息，那么这 10 条消息的位移依次是 0、1、2、......、9。
+</code></pre>
+<h3 id="Kafka-的三层消息架构"><a href="#Kafka-的三层消息架构" class="headerlink" title="Kafka 的三层消息架构"></a>Kafka 的三层消息架构</h3><pre><code>- 第一层是主题层，每个主题可以配置 M 个分区，而每个分区又可以配置 N 个副本。
+- 第二层是分区层，每个分区的 N 个副本中只能有一个充当领导者角色，对外提供服务；其他 N-1 个副本是追随者副本，只是提供数据冗余之用。
+- 第三层是消息层，分区中包含若干条消息，每条消息的位移从 0 开始，依次递增。
+- 最后，客户端程序只能与分区的领导者副本进行交互。
+</code></pre>
+<h3 id="Broker-如何持久化数据"><a href="#Broker-如何持久化数据" class="headerlink" title="Broker 如何持久化数据"></a>Broker 如何持久化数据</h3><pre><code>Kafka 使用消息日志（Log）来保存数据，一个日志就是磁盘上一个只能追加写（Append-only）消息的物理文件。
+因为只能追加写入，故避免了缓慢的随机 I/O 操作，改为性能较好的顺序 I/O 写操作，这也是实现 Kafka 高吞吐量特性的一个重要手段。
+Kafka 要定期地删除消息以回收磁盘。怎么删除呢？简单来说就是通过日志段（Log Segment）机制。
+在 Kafka 底层，一个日志又进一步细分成多个日志段，消息被追加写到当前最新的日志段中，
+当写满了一个日志段后，Kafka 会自动切分出一个新的日志段，并将老的日志段封存起来。
+Kafka 在后台还有定时任务会定期地检查老的日志段是否能够被删除，从而实现回收磁盘空间的目的。
+</code></pre>
+<h3 id="Kafka-中实现-P2P-模型的方法"><a href="#Kafka-中实现-P2P-模型的方法" class="headerlink" title="Kafka 中实现 P2P 模型的方法"></a>Kafka 中实现 P2P 模型的方法</h3><pre><code>在 Kafka 中实现这种 P2P 模型的方法就是引入了消费者组（Consumer Group）。
+所谓的消费者组，指的是多个消费者实例共同组成一个组来消费一组主题。
+这组主题中的每个分区都只会被组内的一个消费者实例消费，其他消费者实例不能消费它。
+为什么要引入消费者组呢？主要是为了提升消费者端的吞吐量。多个消费者实例同时消费，加速整个消费端的吞吐量（TPS）。
+另外这里的消费者实例可以是运行消费者应用的进程，也可以是一个线程，它们都称为一个消费者实例（Consumer Instance）。
+消费者组里面的所有消费者实例不仅“瓜分”订阅主题的数据，而且更酷的是它们还能彼此协助。
+假设组内某个实例挂掉了，Kafka 能够自动检测到，然后把这个 Failed 实例之前负责的分区转移给其他活着的消费者。
+这个过程就是 Kafka 中大名鼎鼎的“重平衡”（Rebalance）。
+</code></pre>
+<h3 id="消费者位移"><a href="#消费者位移" class="headerlink" title="消费者位移"></a>消费者位移</h3><pre><code>每个消费者在消费消息的过程中必然需要有个字段记录它当前消费到了分区的哪个位置上，
+这个字段就是消费者位移（Consumer Offset）。
+注意，这和上面所说的位移完全不是一个概念。
+上面的“位移”表征的是分区内的消息位置，它是不变的，即一旦消息被成功写入到一个分区上，它的位移值就是固定的了。
+而消费者位移则不同，它可能是随时变化的。
+另外每个消费者有着自己的消费者位移，因此一定要区分这两类位移的区别。
+</code></pre>
+<h3 id="术语示意图"><a href="#术语示意图" class="headerlink" title="术语示意图"></a>术语示意图</h3><p align='center'>
+    <img data-src='https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_1.jpg'>
+</p>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Yxd
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://yxudong.github.io/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/" title="极客时间 - 《Kafka核心技术与实战》 学习笔记 1">https://yxudong.github.io/极客时间-《Kafka核心技术与实战》-学习笔记-1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC8="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Kafka/" rel="tag"><i class="fa fa-tag"></i> Kafka</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E6%A0%88/" rel="prev" title="递归反转栈">
+      <i class="fa fa-chevron-left"></i> 递归反转栈
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-Kafka"><span class="nav-number">1.</span> <span class="nav-text">什么是 Kafka</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-%E6%B6%88%E6%81%AF%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">Kafka 消息格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-%E6%94%AF%E6%8C%81%E7%9A%84%E6%B6%88%E6%81%AF%E5%BC%95%E6%93%8E%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">Kafka 支持的消息引擎模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Topic-%E5%90%AB%E4%B9%89"><span class="nav-number">4.</span> <span class="nav-text">Topic 含义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Producer-%E5%92%8C-Consumer-%E5%90%AB%E4%B9%89"><span class="nav-number">5.</span> <span class="nav-text">Producer 和 Consumer 含义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Broker-%E5%90%AB%E4%B9%89"><span class="nav-number">6.</span> <span class="nav-text">Broker 含义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Replication-%E5%90%AB%E4%B9%89"><span class="nav-number">7.</span> <span class="nav-text">Replication 含义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Partitioning-%E5%90%AB%E4%B9%89"><span class="nav-number">8.</span> <span class="nav-text">Partitioning 含义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC%E5%A6%82%E4%BD%95%E4%B8%8E%E5%88%86%E5%8C%BA%E8%81%94%E7%B3%BB%E5%9C%A8%E4%B8%80%E8%B5%B7"><span class="nav-number">9.</span> <span class="nav-text">副本如何与分区联系在一起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-%E7%9A%84%E4%B8%89%E5%B1%82%E6%B6%88%E6%81%AF%E6%9E%B6%E6%9E%84"><span class="nav-number">10.</span> <span class="nav-text">Kafka 的三层消息架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Broker-%E5%A6%82%E4%BD%95%E6%8C%81%E4%B9%85%E5%8C%96%E6%95%B0%E6%8D%AE"><span class="nav-number">11.</span> <span class="nav-text">Broker 如何持久化数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-%E4%B8%AD%E5%AE%9E%E7%8E%B0-P2P-%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">12.</span> <span class="nav-text">Kafka 中实现 P2P 模型的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E8%B4%B9%E8%80%85%E4%BD%8D%E7%A7%BB"><span class="nav-number">13.</span> <span class="nav-text">消费者位移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AF%E8%AF%AD%E7%A4%BA%E6%84%8F%E5%9B%BE"><span class="nav-number">14.</span> <span class="nav-text">术语示意图</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yxd"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Yxd</p>
+  <div class="site-description" itemprop="description">个人博客记录，涵盖 Kafka，Redis，MySQL，Python，Go，数据结构和算法（DS&A），面试（interview）等等</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3l4dWRvbmc=" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yxudong"><i class="fab fa-github fa-fw"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZG91YmFuLmNvbS9wZW9wbGUveXhkX0pvc2h1YQ==" title="豆瓣 → https:&#x2F;&#x2F;www.douban.com&#x2F;people&#x2F;yxd_Joshua"><i class="fab fa-douban fa-fw"></i>豆瓣</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS95YW5nLXh1LWRvbmctODc=" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;yang-xu-dong-87"><i class="fab fa-zhihu fa-fw"></i>知乎</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9zcGFjZS5iaWxpYmlsaS5jb20vMTc4NjQzNDg=" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;17864348"><i class="fab fa-bilibili fa-fw"></i>Bilibili</span>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yxd</span>
+</div>
+  <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

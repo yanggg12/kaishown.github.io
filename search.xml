@@ -1,0 +1,953 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Python [1, -1][x == 0] 写法解释和用处</title>
+    <url>/Python-1-1-x-0-%E5%86%99%E6%B3%95%E8%A7%A3%E9%87%8A%E5%92%8C%E7%94%A8%E5%A4%84/</url>
+    <content><![CDATA[<h3 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h3><p>这种写法通俗形式为 <strong>[条件为假, 条件为真][判断条件]</strong><br>在 Python 中，布尔型 True 转变为整数等于 1，False 转变为整数等于 0<br>所以条件为真时，返回第二个数，条件为假时，返回第一个数</p>
+<h3 id="用处"><a href="#用处" class="headerlink" title="用处"></a>用处</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> x == <span class="number">0</span>:</span><br><span class="line">    a = -<span class="number">1</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    a = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>可以写成这样的形式</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = [<span class="number">1</span>, -<span class="number">1</span>][x == <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Dijkstra 最短路径算法 Python 实现</title>
+    <url>/Dijkstra-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95-Python-%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[<h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>使用 Dijkstra 算法求图中的任意顶点到其它顶点的最短路径（求出需要经过那些点以及最短距离）。</p>
+<p>以下图为例：</p>
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/Dijkstra%20%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95%20Python%20%E5%AE%9E%E7%8E%B0_1.png" alt="image"></p>
+<span id="more"></span>
+
+<h3 id="算法思想"><a href="#算法思想" class="headerlink" title="算法思想"></a>算法思想</h3><p>可以使用二维数组来存储顶点之间边的关系</p>
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/Dijkstra%20%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95%20Python%20%E5%AE%9E%E7%8E%B0_2.png" alt="image"></p>
+<p>首先需要用一个一维数组 dis 来存储 初始顶点到其余各个顶点的初始路程，以求 1 顶点到其它各个顶点为例：</p>
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/Dijkstra%20%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95%20Python%20%E5%AE%9E%E7%8E%B0_3.png" alt="image"></p>
+<p>将此时 dis 数组中的值称为最短路的“估计值”。</p>
+<p>既然是求 1 号顶点到其余各个顶点的最短路程，那就先找一个离 1 号顶点最近的顶点。通过数组 dis 可知当前离 1 号顶点最近是 2 号顶点。当选择了 2 号顶点后，dis[2] 的值就已经从“估计值”变为了“确定值”，即 1 号顶点到 2 号顶点的最短路程就是当前 dis[2]值。为什么呢？因为目前离 1 号顶点最近的是 2 号顶点，并且这个图所有的边都是正数，那么肯定不可能通过第三个顶点中转，使得 1 号顶点到 2 号顶点的路程进一步缩短了。</p>
+<p>既然选了 2 号顶点，接下来再来看 2 号顶点有哪些出边。有 2-&gt;3 和 2-&gt;4 这两条边。先讨论通过 2-&gt;3 这条边能否让 1 号顶点到 3 号顶点的路程变短。也就是说现在比较 dis[3] 和 dis[2] + G[2][3]的大小。其中 dis[3] 表示 1 号顶点到 3 号顶点的路程。dis[2] + G[2][3] 中 dis[2] 表示 1 号顶点到 2 号顶点的路程，G[2][3] 表示 2-&gt;3 这条边。所以 dis[2] + G[2][3] 就表示从 1 号顶点先到 2 号顶点，再通过 2-&gt;3 这条边，到达 3 号顶点的路程。</p>
+<p>在本例中 dis[3] = 12，dis[2] + G[2][3] = 1 + 9 = 10，dis[3] &gt; dis[2] + G[2][3]，所以 dis[3] 要更新为 10。这个过程有个专业术语叫做“松弛”。即 1 号顶点到 3 号顶点的路程即 dis[3]，通过 2-&gt;3 这条边松弛成功。这是 Dijkstra 算法的主要思想：通过“边”来松弛初始顶点到其余各个顶点的路程。</p>
+<p>同理通过 2-&gt;4（G[2][4]），可以将 dis[4]的值从 ∞ 松弛为 4（dis[4] 初始为 ∞，dis[2] + G[2][4] = 1 + 3 = 4，dis[4] &gt; dis[2] + G[2][4]，所以 dis[4] 要更新为 4）。</p>
+<p>刚才对 2 号顶点所有的出边进行了松弛。松弛完毕之后 dis 数组为：</p>
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/Dijkstra%20%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95%20Python%20%E5%AE%9E%E7%8E%B0_4.png" alt="image"></p>
+<p>接下来，继续在剩下的 3、4、5 和 6 号顶点中，选出离 1 号顶点最近的顶点。通过上面更新过 dis 数组，当前离 1 号顶点最近是 4 号顶点。此时，dis[4] 的值已经从“估计值”变为了“确定值”。下面继续对 4 号顶点的所有出边（4-&gt;3，4-&gt;5 和 4-&gt;6）用刚才的方法进行松弛。松弛完毕之后 dis 数组为：</p>
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/Dijkstra%20%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95%20Python%20%E5%AE%9E%E7%8E%B0_5.png" alt="image"></p>
+<p>继续在剩下的 3、5 和 6 号顶点中，选出离 1 号顶点最近的顶点，这次选择 3 号顶点。此时，dis[3] 的值已经从“估计值”变为了“确定值”。对 3 号顶点的所有出边（3-&gt;5）进行松弛。松弛完毕之后 dis 数组为：</p>
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/Dijkstra%20%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95%20Python%20%E5%AE%9E%E7%8E%B0_6.png" alt="image"></p>
+<p>继续在剩下的 5 和 6 号顶点中，选出离 1 号顶点最近的顶点，这次选择 5 号顶点。此时，dis[5] 的值已经从“估计值”变为了“确定值”。对5号顶点的所有出边（5-&gt;4）进行松弛。松弛完毕之后 dis 数组为：</p>
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/Dijkstra%20%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95%20Python%20%E5%AE%9E%E7%8E%B0_7.png" alt="image"></p>
+<p>最后对 6 号顶点所有点出边进行松弛。因为这个例子中 6 号顶点没有出边，因此不用处理。到此，dis 数组中所有的值都已经从“估计值”变为了“确定值”。</p>
+<p>最终 dis 数组如下，这便是 1 号顶点到其余各个顶点的最短路径。</p>
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/Dijkstra%20%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95%20Python%20%E5%AE%9E%E7%8E%B0_8.png" alt="image"></p>
+<p>总结一下刚才的算法。算法的基本思想是：每次找到离源点（上面例子的源点就是 1 号顶点）最近的一个顶点，然后以该顶点为中心进行扩展，最终得到源点到其余所有点的最短路径。基本步骤如下：</p>
+<ol>
+<li>将所有的顶点分为两部分：已知最短路程的顶点集合 P 和未知最短路径的顶点集合 Q。最开始，已知最短路径的顶点集合 P 中只有源点一个顶点。这里用一个 visited[ i ]数组来记录哪些点在集合 P 中。例如对于某个顶点 i，如果 visited[ i ]为 1 则表示这个顶点在集合 P 中，如果 visited[ i ]为 0 则表示这个顶点在集合 Q 中；</li>
+<li>设置源点 s 到自己的最短路径为 0 即 dis = 0。若存在源点有能直接到达的顶点 i，则把 dis[ i ]设为 G[s][ i ]。同时把所有其它（源点不能直接到达的）顶点的最短路径为设为 ∞；</li>
+<li>在集合 Q 的所有顶点中选择一个离源点 s 最近的顶点  u（即 dis[u] 最小）加入到集合 P。并考察所有以点 u 为起点的边，对每一条边进行松弛操作。例如存在一条从 u 到 v 的边，那么可以通过将边 u-&gt;v 添加到尾部来拓展一条从 s 到 v 的路径，这条路径的长度是 dis[u] + G[u][v]。如果这个值比目前已知的 dis[v] 的值要小，我们可以用新值来替代当前 dis[v] 中的值；</li>
+<li>重复第 3 步，如果集合 Q 为空，算法结束。最终 dis 数组中的值就是源点到所有顶点的最短路径</li>
+</ol>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><ol>
+<li><p>Dijkstra 算法不能应用于有负权重的图</p>
+</li>
+<li><p>Dijkstra 时间复杂度为 O(N<sup>2</sup>)</p>
+</li>
+</ol>
+<h3 id="Python-实现"><a href="#Python-实现" class="headerlink" title="Python 实现"></a>Python 实现</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Dijkstra</span>(<span class="params">G, start</span>):</span></span><br><span class="line">    <span class="comment"># 输入是从 0 开始，所以起始点减 1</span></span><br><span class="line">    start = start - <span class="number">1</span></span><br><span class="line">    inf = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">    node_num = <span class="built_in">len</span>(G)</span><br><span class="line">    <span class="comment"># visited 代表哪些顶点加入过</span></span><br><span class="line">    visited = [<span class="number">0</span>] * node_num</span><br><span class="line">    <span class="comment"># 初始顶点到其余顶点的距离</span></span><br><span class="line">    dis = &#123;node: G[start][node] <span class="keyword">for</span> node <span class="keyword">in</span> <span class="built_in">range</span>(node_num)&#125;</span><br><span class="line">    <span class="comment"># parents 代表最终求出最短路径后，每个顶点的上一个顶点是谁，初始化为 -1，代表无上一个顶点</span></span><br><span class="line">    parents = &#123;node: -<span class="number">1</span> <span class="keyword">for</span> node <span class="keyword">in</span> <span class="built_in">range</span>(node_num)&#125;</span><br><span class="line">    <span class="comment"># 起始点加入进 visited 数组</span></span><br><span class="line">    visited[start] = <span class="number">1</span></span><br><span class="line">    <span class="comment"># 最开始的上一个顶点为初始顶点</span></span><br><span class="line">    last_point = start</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(node_num - <span class="number">1</span>):</span><br><span class="line">        <span class="comment"># 求出 dis 中未加入 visited 数组的最短距离和顶点</span></span><br><span class="line">        min_dis = inf</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(node_num):</span><br><span class="line">            <span class="keyword">if</span> visited[j] == <span class="number">0</span> <span class="keyword">and</span> dis[j] &lt; min_dis:</span><br><span class="line">                min_dis = dis[j]</span><br><span class="line">                <span class="comment"># 把该顶点做为下次遍历的上一个顶点</span></span><br><span class="line">                last_point = j</span><br><span class="line">        <span class="comment"># 最短顶点假加入 visited 数组</span></span><br><span class="line">        visited[last_point] = <span class="number">1</span></span><br><span class="line">        <span class="comment"># 对首次循环做特殊处理，不然在首次循环时会没法求出该点的上一个顶点</span></span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">0</span>:</span><br><span class="line">            parents[last_point] = start + <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(node_num):</span><br><span class="line">            <span class="keyword">if</span> G[last_point][k] &lt; inf <span class="keyword">and</span> dis[k] &gt; dis[last_point] + G[last_point][k]:</span><br><span class="line">                <span class="comment"># 如果有更短的路径，更新 dis 和 记录 parents</span></span><br><span class="line">                dis[k] = dis[last_point] + G[last_point][k]</span><br><span class="line">                parents[k] = last_point + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 因为从 0 开始，最后把顶点都加 1</span></span><br><span class="line">    <span class="keyword">return</span> &#123;key + <span class="number">1</span>: values <span class="keyword">for</span> key, values <span class="keyword">in</span> dis.items()&#125;, &#123;key + <span class="number">1</span>: values <span class="keyword">for</span> key, values <span class="keyword">in</span> parents.items()&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    inf = <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">    G = [[<span class="number">0</span>, <span class="number">1</span>, <span class="number">12</span>, inf, inf, inf],</span><br><span class="line">         [inf, <span class="number">0</span>, <span class="number">9</span>, <span class="number">3</span>, inf, inf],</span><br><span class="line">         [inf, inf, <span class="number">0</span>, inf, <span class="number">5</span>, inf],</span><br><span class="line">         [inf, inf, <span class="number">4</span>, <span class="number">0</span>, <span class="number">13</span>, <span class="number">15</span>],</span><br><span class="line">         [inf, inf, inf, inf, <span class="number">0</span>, <span class="number">4</span>],</span><br><span class="line">         [inf, inf, inf, inf, inf, <span class="number">0</span>]]</span><br><span class="line">    dis, parents = Dijkstra(G, <span class="number">1</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;dis: &quot;</span>, dis)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;parents: &quot;</span>, parents)</span><br></pre></td></tr></table></figure>
+
+<p>输出为</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">dis:  &#123;<span class="number">1</span>: <span class="number">0</span>, <span class="number">2</span>: <span class="number">1</span>, <span class="number">3</span>: <span class="number">8</span>, <span class="number">4</span>: <span class="number">4</span>, <span class="number">5</span>: <span class="number">13</span>, <span class="number">6</span>: <span class="number">17</span>&#125;</span><br><span class="line">parents:  &#123;<span class="number">1</span>: -<span class="number">1</span>, <span class="number">2</span>: <span class="number">1</span>, <span class="number">3</span>: <span class="number">4</span>, <span class="number">4</span>: <span class="number">2</span>, <span class="number">5</span>: <span class="number">3</span>, <span class="number">6</span>: <span class="number">5</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果求 1 号顶点到 6 号顶点的最短距离，dis[6] = 17，所以最短距离为 17。</p>
+<p>再看 parents[6] = 5，说明 6 号顶点的上一个顶点为 5，parents[5] = 3，说明 5 号顶点的上一个顶点为 3，以此类推，最终 1 号顶点到 6 号顶点的路径为 1-&gt;2-&gt;4-&gt;3-&gt;5-&gt;6。</p>
+<h3 id="优化思路"><a href="#优化思路" class="headerlink" title="优化思路"></a>优化思路</h3><ul>
+<li>其中每次找到离 1 号顶点最近的顶点的时间复杂度是 O(N)，可以用“堆”来优化，使得这一部分的时间复杂度降低到 O(logN)；</li>
+<li>另外对于边数 M 少于 N<sup>2</sup> 的稀疏图来说（把 M 远小于 N<sup>2</sup> 的图称为稀疏图，而 M 相对较大的图称为稠密图），可以用邻接表来代替邻接矩阵，使得整个时间复杂度优化到 O((M+N)logN)。注意，在最坏的情况下 M 就是 N<sup>2</sup>，这样的话 MlogN 要比 N<sup>2</sup> 还要大。但是大多数情况下并不会有那么多边，所以 (M+N)logN 要比 N<sup>2</sup> 小很多</li>
+</ul>
+]]></content>
+      <categories>
+        <category>DS&amp;A</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>DS&amp;A</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python 日期格式，时间戳之间转换</title>
+    <url>/Python-%E4%B8%AD%E7%9A%84-os-path-dirname-file-%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<h3 id="获取当前时间戳"><a href="#获取当前时间戳" class="headerlink" title="获取当前时间戳"></a>获取当前时间戳</h3><ul>
+<li>方法：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">now &#x3D; time.time()</span><br><span class="line">print(&#39;now:&#39;, now, &#39;\n&#39;, type(now))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">now: 1498926743.1411922 </span><br><span class="line"> &lt;class &#39;float&#39;&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取当前日期"><a href="#获取当前日期" class="headerlink" title="获取当前日期"></a>获取当前日期</h3><span id="more"></span>
+
+<ul>
+<li>方法：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">datenow &#x3D; datetime.datetime.now()</span><br><span class="line">print(&#39;datenow:&#39;, datenow, &#39;\n&#39;, type(datenow))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">datenow: 2017-07-02 00:34:35.272749 </span><br><span class="line"> &lt;class &#39;datetime.datetime&#39;&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符串格式更改"><a href="#字符串格式更改" class="headerlink" title="字符串格式更改"></a>字符串格式更改</h3><p>如a = “2017-07-02 00:34:35”，想改为 a = “2017/07/02 00:34:35”</p>
+<ul>
+<li>方法：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a &#x3D; &quot;2013-10-10 23:40:00&quot;</span><br><span class="line">timeArray &#x3D; time.strptime(a, &quot;%Y-%m-%d %H:%M:%S&quot;)                # 先转换为时间数组</span><br><span class="line">otherStyleTime &#x3D; time.strftime(&quot;%Y&#x2F;%m&#x2F;%d %H:%M:%S&quot;, timeArray)   # 转换为其他格式</span><br><span class="line">print(&#39;otherStyleTime:&#39;, otherStyleTime)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">otherStyleTime: 2017&#x2F;07&#x2F;02 00:34:35</span><br></pre></td></tr></table></figure>
+
+<h3 id="将字符串的时间转换为时间戳"><a href="#将字符串的时间转换为时间戳" class="headerlink" title="将字符串的时间转换为时间戳"></a>将字符串的时间转换为时间戳</h3><ul>
+<li>方法：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a &#x3D; &quot;2017-07-02 00:34:35&quot; </span><br><span class="line">timeArray &#x3D; time.strptime(a, &quot;%Y-%m-%d %H:%M:%S&quot;)            # 将其转换为时间数组</span><br><span class="line">timeStamp &#x3D; int(time.mktime(timeArray))                      # 转换为时间戳</span><br><span class="line">print(&#39;timesStamp:&#39;, timeStamp)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">timesStamp: 1498926875</span><br></pre></td></tr></table></figure>
+
+<h3 id="时间戳转换为指定格式日期"><a href="#时间戳转换为指定格式日期" class="headerlink" title="时间戳转换为指定格式日期"></a>时间戳转换为指定格式日期</h3><ul>
+<li>方法一：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">timeStamp &#x3D; 1498927046</span><br><span class="line">timeArray &#x3D; time.localtime(timeStamp)                              # 利用localtime()转换为时间数组</span><br><span class="line">otherStyleTime &#x3D; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;, timeArray)     # 格式化为需要的格式</span><br><span class="line">print(&#39;otherStyleTime:&#39;, otherStyleTime)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>方法二：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">timeStamp &#x3D; 1498927046</span><br><span class="line">dateArray &#x3D; datetime.datetime.fromtimestamp(timeStamp)</span><br><span class="line">otherStyleTime &#x3D; dateArray.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">print(&#39;otherStyleTime:&#39;, otherStyleTime)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">otherStyleTime: 2017-07-02 00:37:26</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取当前时间并转换为指定日期格式"><a href="#获取当前时间并转换为指定日期格式" class="headerlink" title="获取当前时间并转换为指定日期格式"></a>获取当前时间并转换为指定日期格式</h3><ul>
+<li>方法一：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">now &#x3D; int(time.time())                                             # 获得当前时间时间戳</span><br><span class="line">timeArray &#x3D; time.localtime(now)</span><br><span class="line">StyleTime &#x3D; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;, timeArray)</span><br><span class="line">print(&#39;StyleTime:&#39;, StyleTime)  </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>方法二：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">now &#x3D; datetime.datetime.now()                                 # 获得当前时间，这是时间数组格式</span><br><span class="line">StyleTime &#x3D; now.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)                 # 转换为指定的格式</span><br><span class="line">print(&#39;StyleTime:&#39;, StyleTime)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">StyleTime: 2017-07-02 00:16:30</span><br></pre></td></tr></table></figure>
+
+<h3 id="获得三天前的时间"><a href="#获得三天前的时间" class="headerlink" title="获得三天前的时间"></a>获得三天前的时间</h3><ul>
+<li>方法:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">threeDayAgo &#x3D; (datetime.datetime.now() - datetime.timedelta(days &#x3D; 3))   # 先获得时间数组格式的日期</span><br><span class="line">timeStamp &#x3D; int(time.mktime(threeDayAgo.timetuple()))                    # 转换为时间戳</span><br><span class="line">threeDayAgo &#x3D; threeDayAgo.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)                  # 转换为其他字符串格式</span><br><span class="line">print(&#39;threeDayAgo:&#39;, threeDayAgo)</span><br></pre></td></tr></table></figure>
+
+<p>timedelta()的参数有:days, seconds, microseconds, milliseconds, minutes, hours, weeks</p>
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">threeDayAgo: 2017-06-29 00:21:04</span><br></pre></td></tr></table></figure>
+
+<h3 id="给定时间戳-计算该时间的几天前时间"><a href="#给定时间戳-计算该时间的几天前时间" class="headerlink" title="给定时间戳,计算该时间的几天前时间:"></a>给定时间戳,计算该时间的几天前时间:</h3><ul>
+<li>方法:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">timeStamp &#x3D; 1498926852</span><br><span class="line">dateArray &#x3D; datetime.datetime.fromtimestamp(timeStamp)  # 先转换为datetime</span><br><span class="line">threeDayAgo &#x3D; dateArray - datetime.timedelta(days&#x3D;3)</span><br><span class="line">print(&#39;threeDayAgo:&#39;, threeDayAgo)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">threeDayAgo: 2017-06-28 16:34:12</span><br></pre></td></tr></table></figure>
+
+<p>参考上面，可以转换为其他的任意格式</p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python 日期格式，时间戳之间转换</title>
+    <url>/Python-%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%EF%BC%8C%E6%97%B6%E9%97%B4%E6%88%B3%E4%B9%8B%E9%97%B4%E8%BD%AC%E6%8D%A2/</url>
+    <content><![CDATA[<h3 id="获取当前时间戳"><a href="#获取当前时间戳" class="headerlink" title="获取当前时间戳"></a>获取当前时间戳</h3><ul>
+<li>方法：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">now &#x3D; time.time()</span><br><span class="line">print(&#39;now:&#39;, now, &#39;\n&#39;, type(now))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">now: 1498926743.1411922 </span><br><span class="line"> &lt;class &#39;float&#39;&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取当前日期"><a href="#获取当前日期" class="headerlink" title="获取当前日期"></a>获取当前日期</h3><span id="more"></span>
+
+<ul>
+<li>方法：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">datenow &#x3D; datetime.datetime.now()</span><br><span class="line">print(&#39;datenow:&#39;, datenow, &#39;\n&#39;, type(datenow))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">datenow: 2017-07-02 00:34:35.272749 </span><br><span class="line"> &lt;class &#39;datetime.datetime&#39;&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符串格式更改"><a href="#字符串格式更改" class="headerlink" title="字符串格式更改"></a>字符串格式更改</h3><p>如a = “2017-07-02 00:34:35”，想改为 a = “2017/07/02 00:34:35”</p>
+<ul>
+<li>方法：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a &#x3D; &quot;2013-10-10 23:40:00&quot;</span><br><span class="line">timeArray &#x3D; time.strptime(a, &quot;%Y-%m-%d %H:%M:%S&quot;)                # 先转换为时间数组</span><br><span class="line">otherStyleTime &#x3D; time.strftime(&quot;%Y&#x2F;%m&#x2F;%d %H:%M:%S&quot;, timeArray)   # 转换为其他格式</span><br><span class="line">print(&#39;otherStyleTime:&#39;, otherStyleTime)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">otherStyleTime: 2017&#x2F;07&#x2F;02 00:34:35</span><br></pre></td></tr></table></figure>
+
+<h3 id="将字符串的时间转换为时间戳"><a href="#将字符串的时间转换为时间戳" class="headerlink" title="将字符串的时间转换为时间戳"></a>将字符串的时间转换为时间戳</h3><ul>
+<li>方法：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a &#x3D; &quot;2017-07-02 00:34:35&quot; </span><br><span class="line">timeArray &#x3D; time.strptime(a, &quot;%Y-%m-%d %H:%M:%S&quot;)            # 将其转换为时间数组</span><br><span class="line">timeStamp &#x3D; int(time.mktime(timeArray))                      # 转换为时间戳</span><br><span class="line">print(&#39;timesStamp:&#39;, timeStamp)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">timesStamp: 1498926875</span><br></pre></td></tr></table></figure>
+
+<h3 id="时间戳转换为指定格式日期"><a href="#时间戳转换为指定格式日期" class="headerlink" title="时间戳转换为指定格式日期"></a>时间戳转换为指定格式日期</h3><ul>
+<li>方法一：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">timeStamp &#x3D; 1498927046</span><br><span class="line">timeArray &#x3D; time.localtime(timeStamp)                              # 利用localtime()转换为时间数组</span><br><span class="line">otherStyleTime &#x3D; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;, timeArray)     # 格式化为需要的格式</span><br><span class="line">print(&#39;otherStyleTime:&#39;, otherStyleTime)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>方法二：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">timeStamp &#x3D; 1498927046</span><br><span class="line">dateArray &#x3D; datetime.datetime.fromtimestamp(timeStamp)</span><br><span class="line">otherStyleTime &#x3D; dateArray.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)</span><br><span class="line">print(&#39;otherStyleTime:&#39;, otherStyleTime)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">otherStyleTime: 2017-07-02 00:37:26</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取当前时间并转换为指定日期格式"><a href="#获取当前时间并转换为指定日期格式" class="headerlink" title="获取当前时间并转换为指定日期格式"></a>获取当前时间并转换为指定日期格式</h3><ul>
+<li>方法一：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">now &#x3D; int(time.time())                                             # 获得当前时间时间戳</span><br><span class="line">timeArray &#x3D; time.localtime(now)</span><br><span class="line">StyleTime &#x3D; time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;, timeArray)</span><br><span class="line">print(&#39;StyleTime:&#39;, StyleTime)  </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>方法二：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">now &#x3D; datetime.datetime.now()                                 # 获得当前时间，这是时间数组格式</span><br><span class="line">StyleTime &#x3D; now.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)                 # 转换为指定的格式</span><br><span class="line">print(&#39;StyleTime:&#39;, StyleTime)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">StyleTime: 2017-07-02 00:16:30</span><br></pre></td></tr></table></figure>
+
+<h3 id="获得三天前的时间"><a href="#获得三天前的时间" class="headerlink" title="获得三天前的时间"></a>获得三天前的时间</h3><ul>
+<li>方法:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import time</span><br><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">threeDayAgo &#x3D; (datetime.datetime.now() - datetime.timedelta(days &#x3D; 3))   # 先获得时间数组格式的日期</span><br><span class="line">timeStamp &#x3D; int(time.mktime(threeDayAgo.timetuple()))                    # 转换为时间戳</span><br><span class="line">threeDayAgo &#x3D; threeDayAgo.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)                  # 转换为其他字符串格式</span><br><span class="line">print(&#39;threeDayAgo:&#39;, threeDayAgo)</span><br></pre></td></tr></table></figure>
+
+<p>timedelta()的参数有:days, seconds, microseconds, milliseconds, minutes, hours, weeks</p>
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">threeDayAgo: 2017-06-29 00:21:04</span><br></pre></td></tr></table></figure>
+
+<h3 id="给定时间戳-计算该时间的几天前时间"><a href="#给定时间戳-计算该时间的几天前时间" class="headerlink" title="给定时间戳,计算该时间的几天前时间:"></a>给定时间戳,计算该时间的几天前时间:</h3><ul>
+<li>方法:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">timeStamp &#x3D; 1498926852</span><br><span class="line">dateArray &#x3D; datetime.datetime.fromtimestamp(timeStamp)  # 先转换为datetime</span><br><span class="line">threeDayAgo &#x3D; dateArray - datetime.timedelta(days&#x3D;3)</span><br><span class="line">print(&#39;threeDayAgo:&#39;, threeDayAgo)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">threeDayAgo: 2017-06-28 16:34:12</span><br></pre></td></tr></table></figure>
+
+<p>参考上面，可以转换为其他的任意格式</p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>极客时间 - 《Kafka核心技术与实战》 学习笔记 1</title>
+    <url>/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/</url>
+    <content><![CDATA[<h3 id="什么是-Kafka"><a href="#什么是-Kafka" class="headerlink" title="什么是 Kafka"></a>什么是 Kafka</h3><pre><code>Apache Kafka 是一款开源的消息引擎系统。
+</code></pre>
+<h3 id="Kafka-消息格式"><a href="#Kafka-消息格式" class="headerlink" title="Kafka 消息格式"></a>Kafka 消息格式</h3><pre><code>Kafka 使用的是纯二进制字节序列。
+</code></pre>
+<h3 id="Kafka-支持的消息引擎模型"><a href="#Kafka-支持的消息引擎模型" class="headerlink" title="Kafka 支持的消息引擎模型"></a>Kafka 支持的消息引擎模型</h3><pre><code>Kafka 同时支持两种消息引擎模型，点对点模型和发布 / 订阅模型。
+</code></pre>
+<h3 id="Topic-含义"><a href="#Topic-含义" class="headerlink" title="Topic 含义"></a>Topic 含义</h3><pre><code>在 Kafka 中，发布订阅的对象是主题（Topic），可以为每个业务、每个应用甚至是每类数据都创建专属的主题。
+</code></pre>
+<span id="more"></span>
+
+<h3 id="Producer-和-Consumer-含义"><a href="#Producer-和-Consumer-含义" class="headerlink" title="Producer 和 Consumer 含义"></a>Producer 和 Consumer 含义</h3><pre><code>向主题发布消息的客户端应用程序称为生产者（Producer），生产者程序通常持续不断地向一个或多个主题发送消息，
+而订阅这些主题消息的客户端应用程序就被称为消费者（Consumer）。
+和生产者类似，消费者也能够同时订阅多个主题的消息。生产者和消费者统称为客户端（Clients）。
+</code></pre>
+<h3 id="Broker-含义"><a href="#Broker-含义" class="headerlink" title="Broker 含义"></a>Broker 含义</h3><pre><code>Kafka 的服务器端由被称为 Broker 的服务进程构成，即一个 Kafka 集群由多个 Broker 组成，
+Broker 负责接收和处理客户端发送过来的请求，以及对消息进行持久化。
+
+虽然多个 Broker 进程能够运行在同一台机器上，但更常见的做法是将不同的 Broker 分散运行在不同的机器上，
+这样如果集群中某一台机器宕机，即使在它上面运行的所有 Broker 进程都挂掉了，其他机器上的 Broker 也依然能够对外提供服务。
+这其实就是 Kafka 提供高可用的手段之一。
+</code></pre>
+<h3 id="Replication-含义"><a href="#Replication-含义" class="headerlink" title="Replication 含义"></a>Replication 含义</h3><pre><code>实现高可用的另一个手段就是备份机制（Replication）。
+备份的思想很简单，就是把相同的数据拷贝到多台机器上，而这些相同的数据拷贝在 Kafka 中被称为副本（Replica）。
+
+Kafka 定义了两类副本：领导者副本（Leader Replica）和追随者副本（Follower Replica）。
+前者对外提供服务，这里的对外指的是与客户端程序进行交互；而后者只是被动地追随领导者副本而已，不能与外界进行交互。
+
+副本的工作机制也很简单：生产者总是向领导者副本写消息；而消费者总是从领导者副本读消息。
+至于追随者副本，它只做一件事：向领导者副本发送请求，请求领导者把最新生产的消息发给它，这样它能保持与领导者的同步。
+</code></pre>
+<h3 id="Partitioning-含义"><a href="#Partitioning-含义" class="headerlink" title="Partitioning 含义"></a>Partitioning 含义</h3><pre><code>Kafka 中的分区机制指的是将每个主题划分成多个分区（Partition），每个分区是一组有序的消息日志。
+生产者生产的每条消息只会被发送到一个分区中，也就是说如果向一个双分区的主题发送一条消息，
+这条消息要么在分区 0 中，要么在分区 1 中。
+Kafka 的分区编号是从 0 开始的，如果 Topic 有 100 个分区，那么它们的分区号就是从 0 到 99。
+</code></pre>
+<h3 id="副本如何与分区联系在一起"><a href="#副本如何与分区联系在一起" class="headerlink" title="副本如何与分区联系在一起"></a>副本如何与分区联系在一起</h3><pre><code>副本是在分区这个层级定义的。
+每个分区下可以配置若干个副本，其中只能有 1 个领导者副本和 N-1 个追随者副本。
+生产者向分区写入消息，每条消息在分区中的位置信息由一个叫位移（Offset）的数据来表征。
+分区位移总是从 0 开始，假设一个生产者向一个空分区写入了 10 条消息，那么这 10 条消息的位移依次是 0、1、2、......、9。
+</code></pre>
+<h3 id="Kafka-的三层消息架构"><a href="#Kafka-的三层消息架构" class="headerlink" title="Kafka 的三层消息架构"></a>Kafka 的三层消息架构</h3><pre><code>- 第一层是主题层，每个主题可以配置 M 个分区，而每个分区又可以配置 N 个副本。
+- 第二层是分区层，每个分区的 N 个副本中只能有一个充当领导者角色，对外提供服务；其他 N-1 个副本是追随者副本，只是提供数据冗余之用。
+- 第三层是消息层，分区中包含若干条消息，每条消息的位移从 0 开始，依次递增。
+- 最后，客户端程序只能与分区的领导者副本进行交互。
+</code></pre>
+<h3 id="Broker-如何持久化数据"><a href="#Broker-如何持久化数据" class="headerlink" title="Broker 如何持久化数据"></a>Broker 如何持久化数据</h3><pre><code>Kafka 使用消息日志（Log）来保存数据，一个日志就是磁盘上一个只能追加写（Append-only）消息的物理文件。
+因为只能追加写入，故避免了缓慢的随机 I/O 操作，改为性能较好的顺序 I/O 写操作，这也是实现 Kafka 高吞吐量特性的一个重要手段。
+Kafka 要定期地删除消息以回收磁盘。怎么删除呢？简单来说就是通过日志段（Log Segment）机制。
+在 Kafka 底层，一个日志又进一步细分成多个日志段，消息被追加写到当前最新的日志段中，
+当写满了一个日志段后，Kafka 会自动切分出一个新的日志段，并将老的日志段封存起来。
+Kafka 在后台还有定时任务会定期地检查老的日志段是否能够被删除，从而实现回收磁盘空间的目的。
+</code></pre>
+<h3 id="Kafka-中实现-P2P-模型的方法"><a href="#Kafka-中实现-P2P-模型的方法" class="headerlink" title="Kafka 中实现 P2P 模型的方法"></a>Kafka 中实现 P2P 模型的方法</h3><pre><code>在 Kafka 中实现这种 P2P 模型的方法就是引入了消费者组（Consumer Group）。
+所谓的消费者组，指的是多个消费者实例共同组成一个组来消费一组主题。
+这组主题中的每个分区都只会被组内的一个消费者实例消费，其他消费者实例不能消费它。
+为什么要引入消费者组呢？主要是为了提升消费者端的吞吐量。多个消费者实例同时消费，加速整个消费端的吞吐量（TPS）。
+另外这里的消费者实例可以是运行消费者应用的进程，也可以是一个线程，它们都称为一个消费者实例（Consumer Instance）。
+消费者组里面的所有消费者实例不仅“瓜分”订阅主题的数据，而且更酷的是它们还能彼此协助。
+假设组内某个实例挂掉了，Kafka 能够自动检测到，然后把这个 Failed 实例之前负责的分区转移给其他活着的消费者。
+这个过程就是 Kafka 中大名鼎鼎的“重平衡”（Rebalance）。
+</code></pre>
+<h3 id="消费者位移"><a href="#消费者位移" class="headerlink" title="消费者位移"></a>消费者位移</h3><pre><code>每个消费者在消费消息的过程中必然需要有个字段记录它当前消费到了分区的哪个位置上，
+这个字段就是消费者位移（Consumer Offset）。
+注意，这和上面所说的位移完全不是一个概念。
+上面的“位移”表征的是分区内的消息位置，它是不变的，即一旦消息被成功写入到一个分区上，它的位移值就是固定的了。
+而消费者位移则不同，它可能是随时变化的。
+另外每个消费者有着自己的消费者位移，因此一定要区分这两类位移的区别。
+</code></pre>
+<h3 id="术语示意图"><a href="#术语示意图" class="headerlink" title="术语示意图"></a>术语示意图</h3><p align='center'>
+    <img data-src='https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8AKafka%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_1.jpg'>
+</p>
+
+]]></content>
+      <categories>
+        <category>Kafka</category>
+      </categories>
+      <tags>
+        <tag>Kafka</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>uWSGI、WSGI 和 uwsgi</title>
+    <url>/uWSGI%E3%80%81WSGI-%E5%92%8C-uwsgi/</url>
+    <content><![CDATA[<h3 id="图解"><a href="#图解" class="headerlink" title="图解"></a>图解</h3><p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/uWSGI%E3%80%81WSGI%20%E5%92%8C%20uwsgi_1.jpg" alt="image"></p>
+<span id="more"></span>
+
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/uWSGI%E3%80%81WSGI%20%E5%92%8C%20uwsgi_2.jpg" alt="image"></p>
+<p><img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/uWSGI%E3%80%81WSGI%20%E5%92%8C%20uwsgi_3.jpg" alt="image"></p>
+<h4 id="WSGI"><a href="#WSGI" class="headerlink" title="WSGI"></a>WSGI</h4><p>wsgi server（比如 uWSGI）要和 wsgi application（比如 django ）交互，uWSGI 需要将过来的请求转给 django 处理，那么 uWSGI 和 django 的交互和调用就需要一个统一的规范，这个规范就是 WSGI。</p>
+<p>WSGI，全称 Web Server Gateway Interface，或者 Python Web Server Gateway Interface，是为 Python 语言定义的 Web 服务器和 Web 应用程序或框架之间的一种简单而通用的接口。自从 WSGI 被开发出来以后，许多其它语言中也出现了类似接口。</p>
+<p>WSGI 的官方定义是，the Python Web Server Gateway Interface。从名字就可以看出来，这东西是一个 Gateway，也就是网关。网关的作用就是在协议之间进行转换。</p>
+<p>WSGI 是作为 Web 服务器与 Web 应用程序或应用框架之间的一种低级别的接口，以提升可移植 Web 应用开发的共同点。WSGI 是基于现存的 CGI 标准而设计的。</p>
+<h4 id="uWSGI"><a href="#uWSGI" class="headerlink" title="uWSGI"></a>uWSGI</h4><p>uWSGI 是一个 Web 服务器，它实现了 WSGI 协议、uwsgi、http 等协议。Nginx 中 HttpUwsgiModule 的作用是与 uWSGI 服务器进行交换。</p>
+<h4 id="uwsgi"><a href="#uwsgi" class="headerlink" title="uwsgi"></a>uwsgi</h4><p>与 WSGI 一样是一种通信协议，是 uWSGI 服务器的独占协议，用于定义传输信息的类型（type of information），每一个 uwsgi packet 前 4byte 为传输信息类型的描述，与 WSGI 协议是两种东西，据说该协议是 fcgi 协议的 10 倍快。</p>
+<h4 id="FastCgi-协议，-uwsgi-协议与-http-协议有什么用？"><a href="#FastCgi-协议，-uwsgi-协议与-http-协议有什么用？" class="headerlink" title="FastCgi 协议， uwsgi 协议与 http 协议有什么用？"></a>FastCgi 协议， uwsgi 协议与 http 协议有什么用？</h4><p>nginx 和下游服务器交互就必须使用同一个协议，只要大家沟通好使用哪个协议，就可以正常运行了。</p>
+<p>这三种协议就是 nginx 为了与下游服务器交互事先约定好的协议。</p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>极客时间 - 《Redis核心技术与实战》 学习笔记 1</title>
+    <url>/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/</url>
+    <content><![CDATA[<h3 id="数据结构：快速的-Redis-有哪些慢操作？"><a href="#数据结构：快速的-Redis-有哪些慢操作？" class="headerlink" title="数据结构：快速的 Redis 有哪些慢操作？"></a>数据结构：快速的 Redis 有哪些慢操作？</h3><hr>
+<ul>
+<li>Redis 表现突出的原因</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+一方面，这是因为它是内存数据库，所有操作都在内存上完成，内存的访问速度本身就很快。<br>
+另一方面，这要归功于它的数据结构。
+这是因为，键值对是按一定的数据结构来组织的，操作键值对最终就是对数据结构进行增删改查操作，
+所以高效的数据结构是 Redis 快速处理数据的基础。
+</pre>
+
+<ul>
+<li>底层数据结构一共有 6 种，分别是简单动态字符串、双向链表、压缩列表、哈希表、跳表和整数数组。</li>
+</ul>
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_1.jpg" width="500" align=center>
+</div><br>
+
+<span id="more"></span>
+
+<ul>
+<li>键和值用什么结构组织？</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+为了实现从键到值的快速访问，Redis 使用了一个哈希表来保存所有键值对。<br>
+一个哈希表，其实就是一个数组，数组的每个元素称为一个哈希桶。
+所以，我们常说，一个哈希表是由多个哈希桶组成的，每个哈希桶中保存了键值对数据。<br>
+哈希桶中的 entry 元素中保存了 \*key 和 \*value 指针，分别指向了实际的键和值，
+这样一来，即使值是一个集合，也可以通过*value指针被查找到。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_2.jpg" width="500">
+</div><br>
+
+<ul>
+<li>为什么哈希表操作变慢了？</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+哈希表的冲突问题和 rehash 可能带来的操作阻塞。<br>
+Redis 解决哈希冲突的方式，就是链式哈希。<br>
+但是，这里依然存在一个问题，哈希冲突链上的元素只能通过指针逐一查找再操作。<br>
+如果哈希表里写入的数据越来越多，哈希冲突可能也会越来越多，
+这就会导致某些哈希冲突链过长，进而导致这个链上的元素查找耗时长，效率降低。<br>
+对于追求“快”的 Redis 来说，这是不太能接受的。<br>
+所以，Redis 会对哈希表做 rehash 操作。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_3.jpg" width="500">
+</div><br>
+
+<ul>
+<li>哈希表做 rehash</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+rehash 也就是增加现有的哈希桶数量，让逐渐增多的 entry 元素能在更多的桶之间分散保存，减少单个桶中的元素数量，从而减少单个桶中的冲突。<br>
+其实，为了使 rehash 操作更高效，Redis 默认使用了两个全局哈希表：
+哈希表 1 和哈希表 2。
+一开始，当你刚插入数据时，默认使用哈希表 1，此时的哈希表 2 并没有被分配空间。
+随着数据逐步增多，Redis 开始执行 rehash，这个过程分为三步：
+  1. 给哈希表 2 分配更大的空间，例如是当前哈希表 1 大小的两倍；
+  2. 把哈希表 1 中的数据重新映射并拷贝到哈希表 2 中；
+  3. 释放哈希表 1 的空间。
+<br>到此，我们就可以从哈希表 1 切换到哈希表 2，用增大的哈希表 2 保存更多数据，而原来的哈希表 1 留作下一次 rehash 扩容备用。<br>
+这个过程看似简单，但是第二步涉及大量的数据拷贝，
+如果一次性把哈希表 1 中的数据都迁移完，会造成 Redis 线程阻塞，无法服务其他请求。
+此时，Redis 就无法快速访问数据了。<br>
+为了避免这个问题，Redis 采用了渐进式 rehash。
+</pre>
+
+<ul>
+<li>渐进式 rehash</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+简单来说就是在第二步拷贝数据时，Redis 仍然正常处理客户端请求。<br>
+每处理一个请求时，从哈希表 1 中的第一个索引位置开始，顺带着将这个索引位置上的所有 entries 拷贝到哈希表 2 中。<br>
+等处理下一个请求时，再顺带拷贝哈希表 1 中的下一个索引位置的 entries。如下图所示：
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_4.jpg" width="500">
+</div><br>
+
+<ul>
+<li>对于 String 类型来说，找到哈希桶就能直接增删改查了，所以，哈希表的 O(1) 操作复杂度也就是它的复杂度了。</li>
+<li>压缩列表</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+压缩列表实际上类似于一个数组，数组中的每一个元素都对应保存一个数据。<br>
+和数组不同的是，压缩列表在表头有三个字段 zlbytes、zltail 和 zllen，分别表示列表长度、列表尾的偏移量和列表中的 entry 个数；
+压缩列表在表尾还有一个 zlend，表示列表结束。<br>
+在压缩列表中，如果我们要查找定位第一个元素和最后一个元素，可以通过表头三个字段的长度直接定位，复杂度是 O(1)。<br>
+而查找其他元素时，就没有这么高效了，只能逐个查找，此时的复杂度就是 O(N) 了。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_5.jpg" width="500">
+</div><br>
+
+<ul>
+<li>跳表</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+有序链表只能逐一查找元素，导致操作起来非常缓慢，于是就出现了跳表。<br>
+具体来说，跳表在链表的基础上，增加了多级索引，通过索引位置的几个跳转，实现数据的快速定位，如下图所示：
+当数据量很大时，跳表的查找复杂度就是 O(logN)。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_6.jpg" width="500">
+</div><br>
+
+<ul>
+<li>数据结构的时间复杂度</li>
+</ul>
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%201_7.jpg" width="500">
+</div>
+
+<ul>
+<li><p>四句口诀</p>
+<ul>
+<li>单元素操作是基础；</li>
+<li>范围操作非常耗时；</li>
+<li>统计操作通常高效；</li>
+<li>例外情况只有几个。</li>
+</ul>
+</li>
+<li><p>单元素操作</p>
+</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+是指每一种集合类型对单个数据实现的增删改查操作。<br>
+例如，Hash 类型的 HGET、HSET 和 HDEL，Set 类型的 SADD、SREM、SRANDMEMBER 等。<br>
+这些操作的复杂度由集合采用的数据结构决定，例如，HGET、HSET 和 HDEL 是对哈希表做操作，所以它们的复杂度都是 O(1)；<br>
+Set 类型用哈希表作为底层数据结构时，它的 SADD、SREM、SRANDMEMBER 复杂度也是 O(1)。<br>
+这里，有个地方你需要注意一下，集合类型支持同时对多个元素进行增删改查，
+例如 Hash 类型的 HMGET 和 HMSET，Set 类型的 SADD 也支持同时增加多个元素。<br>
+此时，这些操作的复杂度，就是由单个元素操作复杂度和元素个数决定的。例如，HMSET 增加 M 个元素时，复杂度就从 O(1) 变成 O(M) 了。
+</pre>
+
+<ul>
+<li>范围操作</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+是指集合类型中的遍历操作，可以返回集合中的所有数据。<br>
+比如 Hash 类型的 HGETALL 和 Set 类型的 SMEMBERS，或者返回一个范围内的部分数据，比如 List 类型的 LRANGE 和 ZSet 类型的 ZRANGE。<br>
+这类操作的复杂度一般是 O(N)，比较耗时，我们应该尽量避免。<br>
+Redis 从 2.8 版本开始提供了 SCAN 系列操作（包括 HSCAN，SSCAN 和 ZSCAN），这类操作实现了渐进式遍历，每次只返回有限数量的数据。<br>
+这样一来，相比于 HGETALL、SMEMBERS 这类操作来说，就避免了一次性返回所有元素而导致的 Redis 阻塞。
+</pre>
+
+<ul>
+<li>统计操作</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+是指集合类型对集合中所有元素个数的记录，例如 LLEN 和 SCARD。<br>
+这类操作复杂度只有 O(1)，这是因为当集合类型采用压缩列表、双向链表、整数数组这些数据结构时，
+这些结构中专门记录了元素的个数统计，因此可以高效地完成相关操作。
+</pre>
+
+<ul>
+<li>例外情况</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+是指某些数据结构的特殊记录，例如压缩列表和双向链表都会记录表头和表尾的偏移量。<br>
+这样一来，对于 List 类型的 LPOP、RPOP、LPUSH、RPUSH 这四个操作来说，它们是在列表的头尾增删元素，
+这就可以通过偏移量直接定位，所以它们的复杂度也只有 O(1)，可以实现快速操作。
+</pre>
+
+<ul>
+<li>复杂度较高的 List 类型，它的两种底层实现结构：双向链表和压缩列表的操作复杂度都是 O(N)。因此，<strong>因地制宜地使用 List 类型</strong>。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>极客时间 - 《Redis核心技术与实战》 学习笔记 2</title>
+    <url>/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2/</url>
+    <content><![CDATA[<h3 id="高性能IO模型：为什么单线程Redis能那么快？"><a href="#高性能IO模型：为什么单线程Redis能那么快？" class="headerlink" title="高性能IO模型：为什么单线程Redis能那么快？"></a>高性能IO模型：为什么单线程Redis能那么快？</h3><hr>
+<ul>
+<li>Redis 单线程的理解</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+Redis 是单线程，主要是指 Redis 的网络 IO 和键值对读写（数据读写）是由一个线程来完成的，
+这也是 Redis 对外提供键值存储服务的主要流程。<br>
+但 Redis 的其他功能，比如持久化、异步删除、集群数据同步等，其实是由额外的线程执行的。
+</pre>
+
+<ul>
+<li>Redis 为什么用单线程？</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+多线程编程模式面临共享资源的并发访问控制问题。<br>
+并发访问控制一直是多线程开发中的一个难点问题，如果没有精细的设计，
+比如说，只是简单地采用一个粗粒度互斥锁，就会出现不理想的结果：
+    即使增加了线程，大部分线程也在等待获取访问共享资源的互斥锁，并行变串行，系统吞吐率并没有随着线程的增加而增加。<br>
+而且，采用多线程开发一般会引入同步原语来保护共享资源的并发访问，这也会降低系统代码的易调试性和可维护性。<br>
+为了避免这些问题，Redis 直接采用了单线程模式。
+</pre>
+
+<ul>
+<li>单线程 Redis 为什么那么快？</li>
+</ul>
+<span id="more"></span>
+
+<pre style="font-size:0.9em; color:#666666;">
+一方面，Redis 的大部分操作在内存上完成，再加上它采用了高效的数据结构，
+例如哈希表和跳表，这是它实现高性能的一个重要原因。<br>
+另一方面，就是 Redis 采用了多路复用机制，使其在网络 IO 操作中能并发处理大量的客户端请求，实现高吞吐率。
+</pre>
+
+<ul>
+<li>基本 IO 模型与阻塞点</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+以 Get 请求为例，为了处理一个 Get 请求，
+需要监听客户端请求（bind/listen），
+和客户端建立连接（accept），
+从 socket 中读取请求（recv），
+解析客户端发送请求（parse），
+根据请求类型读取键值数据（get），
+最后给客户端返回结果，即向 socket 中写回数据（send）。<br>
+下图显示了这一过程，其中，bind/listen、accept、recv、parse 和 send 属于网络 IO 处理，而 get 属于键值数据操作。
+既然 Redis 是单线程，那么，最基本的一种实现是在一个线程中依次执行上面说的这些操作。
+
+但是，在这里的网络 IO 操作中，有潜在的阻塞点，分别是 accept() 和 recv()。<br>
+当 Redis 监听到一个客户端有连接请求，但一直未能成功建立起连接时，会阻塞在 accept() 函数这里，
+导致其他客户端无法和 Redis 建立连接。<br>
+类似的，当 Redis 通过 recv() 从一个客户端读取数据时，如果数据一直没有到达，Redis 也会一直阻塞在 recv()。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%202_1.jpg" width="500">
+</div><br>
+
+<ul>
+<li>非阻塞模式</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+在 socket 模型中，不同操作调用后会返回不同的套接字类型。<br>
+socket() 方法会返回主动套接字，然后调用 listen() 方法，将主动套接字转化为监听套接字，此时，可以监听来自客户端的连接请求。<br>
+最后，调用 accept() 方法接收到达的客户端连接，并返回已连接套接字。<br>
+针对监听套接字，我们可以设置非阻塞模式：
+    当 Redis 调用 accept() 但一直未有连接请求到达时，Redis 线程可以返回处理其他操作，而不用一直等待。
+    但是，你要注意的是，调用 accept() 时，已经存在监听套接字了
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%202_2.jpg" width="500">
+</div><br>
+
+<ul>
+<li>基于多路复用的高性能 I/O 模型</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+Linux 中的 IO 多路复用机制是指一个线程处理多个 IO 流，就是我们经常听到的 select/epoll 机制。<br>
+简单来说，在 Redis 只运行单线程的情况下，该机制允许内核中，同时存在多个监听套接字和已连接套接字。<br>
+内核会一直监听这些套接字上的连接请求或数据请求。<br>
+一旦有请求到达，就会交给 Redis 线程处理，这就实现了一个 Redis 线程处理多个 IO 流的效果。<br>
+下图就是基于多路复用的 Redis IO 模型。
+图中的多个 FD 就是刚才所说的多个套接字。<br>
+Redis 网络框架调用 epoll 机制，让内核监听这些套接字。
+此时，Redis 线程不会阻塞在某一个特定的监听或已连接套接字上，
+也就是说，不会阻塞在某一个特定的客户端请求处理上。<br>
+正因为此，Redis 可以同时和多个客户端连接并处理请求，从而提升并发性。<br>
+为了在请求到达时能通知到 Redis 线程，select/epoll 提供了基于事件的回调机制，
+即针对不同事件的发生，调用相应的处理函数。<br>
+select/epoll 一旦监测到 FD 上有请求到达时，就会触发相应的事件。
+
+这些事件会被放进一个事件队列，Redis 单线程对该事件队列不断进行处理。<br>
+这样一来，Redis 无需一直轮询是否有请求实际发生，这就可以避免造成 CPU 资源浪费。<br>
+同时，Redis 在对事件队列中的事件进行处理时，会调用相应的处理函数，这就实现了基于事件的回调。<br>
+因为 Redis 一直在对事件队列进行处理，所以能及时响应客户端请求，提升 Redis 的响应性能。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%202_3.jpg" width="500">
+</div>
+
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>极客时间 - 《Redis核心技术与实战》 学习笔记 3</title>
+    <url>/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3/</url>
+    <content><![CDATA[<h3 id="AOF日志：宕机了，Redis如何避免数据丢失？"><a href="#AOF日志：宕机了，Redis如何避免数据丢失？" class="headerlink" title="AOF日志：宕机了，Redis如何避免数据丢失？"></a>AOF日志：宕机了，Redis如何避免数据丢失？</h3><hr>
+<ul>
+<li>Redis 的持久化主要有两大机制，即 AOF(Append Only File) 日志和 RDB(Redis DataBase) 快照。</li>
+<li>AOF 日志是如何实现的？</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+AOF 日志写后日志，“写后”的意思是 Redis 是先执行命令，把数据写入内存，然后才记录日志。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%203_1.jpg" width="500">
+</div><br>
+
+<span id="more"></span>
+
+<ul>
+<li>AOF 为什么要先执行命令再记日志呢？</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+传统数据库的日志，例如 redo log（重做日志），记录的是修改后的数据，
+而 AOF 里记录的是 Redis 收到的每一条命令，这些命令是以文本形式保存的。<br>
+以 Redis 收到 “set testkey testvalue” 命令后记录的日志为例，看看 AOF 日志的内容。
+其中，“*3” 表示当前命令有三个部分，每部分都是由 “$+数字” 开头，后面紧跟着具体的命令、键或值。
+这里，“数字” 表示这部分中的命令、键或值一共有多少字节。
+例如，“$3 set” 表示这部分有 3 个字节，也就是 “set” 命令。<br>
+为了避免额外的检查开销，Redis 在向 AOF 里面记录日志的时候，并不会先去对这些命令进行语法检查。
+所以，如果先记日志再执行命令的话，日志中就有可能记录了错误的命令，Redis 在使用日志恢复数据时，就可能会出错。<br>
+而写后日志这种方式，就是先让系统执行命令，只有命令能执行成功，才会被记录到日志中，
+否则，系统就会直接向客户端报错。<br>
+所以，Redis 使用写后日志这一方式的一大好处是，可以避免出现记录错误命令的情况。<br>
+除此之外，AOF 还有一个好处：它是在命令执行后才记录日志，所以不会阻塞当前的写操作。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%203_2.jpg" width="500">
+</div><br>
+
+<ul>
+<li>AOF 两个潜在的风险</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+首先，如果刚执行完一个命令，还没有来得及记日志就宕机了，那么这个命令和相应的数据就有丢失的风险。<br>
+如果此时 Redis 是用作缓存，还可以从后端数据库重新读入数据进行恢复，
+但是，如果 Redis 是直接用作数据库的话，此时，因为命令没有记入日志，所以就无法用日志进行恢复了。<br>
+其次，AOF 虽然避免了对当前命令的阻塞，但可能会给下一个操作带来阻塞风险。<br>
+这是因为，AOF 日志也是在<strong>主线程</strong>中执行的，
+如果在把日志文件写入磁盘时，磁盘写压力大，就会导致写盘很慢，进而导致后续的操作也无法执行了。
+</pre>
+
+<ul>
+<li>三种写回策略</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+对于这个问题，AOF 机制给我们提供了三个选择，也就是 AOF 配置项 appendfsync 的三个可选。<br>
+<ul>
+  <li>Always，同步写回：每个写命令执行完，立马同步地将日志写回磁盘；</li>
+  <li>Everysec，每秒写回：每个写命令执行完，只是先把日志写到 AOF 文件的内存缓冲区，每隔一秒把缓冲区中的内容写入磁盘；</li>
+  <li>No，操作系统控制的写回：每个写命令执行完，只是先把日志写到 AOF 文件的内存缓冲区，由操作系统决定何时将缓冲区内容写回磁盘。</li>
+</ul>
+针对避免主线程阻塞和减少数据丢失问题，这三种写回策略都无法做到两全其美。
+<ul>
+  <li>“同步写回”可以做到基本不丢数据，但是它在每一个写命令后都有一个慢速的落盘操作，不可避免地会影响主线程性能；</li>
+  <li>“每秒写回”采用一秒写回一次的频率，避免了“同步写回”的性能开销，
+虽然减少了对系统性能的影响，但是如果发生宕机，上一秒内未落盘的命令操作仍然会丢失。
+所以，这只能算是，在避免影响主线程性能和避免数据丢失两者间取了个折中。</li>
+  <li>虽然“操作系统控制的写回”在写完缓冲区后，就可以继续执行后续的命令，
+但是落盘的时机已经不在 Redis 手中了，只要 AOF 记录没有写回磁盘，一旦宕机对应的数据就丢失了；</li>
+</ul>
+</pre>
+
+<ul>
+<li>三种策略的写回时机对比</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+想要获得高性能，就选择 No 策略；<br>
+如果想要得到高可靠性保证，就选择 Always 策略；<br>
+如果允许数据有一点丢失，又希望性能别受太大影响的话，那么就选择 Everysec 策略。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%203_3.jpg" width="500">
+</div><br>
+
+<ul>
+<li> AOF 文件过大带来的性能问题</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+这里的“性能问题”，主要在于以下三个方面：<br>
+  一是，文件系统本身对文件大小有限制，无法保存过大的文件；<br>
+  二是，如果文件太大，之后再往里面追加命令记录的话，效率也会变低；<br>
+  三是，如果发生宕机，AOF 中记录的命令要一个个被重新执行，用于故障恢复，
+        如果日志文件太大，整个恢复过程就会非常缓慢，这就会影响到 Redis 的正常使用。
+</pre>
+
+<ul>
+<li>AOF 重写机制</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+AOF 重写机制指的是，对过大的 AOF 文件进行重写，以此来压缩 AOF 文件的大小。<br>
+具体的实现是：检查当前键值数据库中的键值对，记录键值对的最终状态，
+从而实现对某个键值对重复操作后产生的多条操作记录压缩成一条的效果。进而实现压缩 AOF 文件的大小。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%203_4.jpg" width="500">
+</div><br>
+
+<ul>
+<li>AOF 重写会阻塞吗?</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+和 AOF 日志由主线程写回不同，重写过程是由后台线程 bgrewriteaof 来完成的，
+这也是为了避免阻塞主线程，导致数据库性能下降。<br>
+</pre>
+
+<ul>
+<li>AOF 重写过程</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+重写的过程总结为“一个拷贝，两处日志”。<br>
+一个拷贝：
+    每次执行重写时，主线程 fork 出后台的 bgrewriteaof 子进程。<br>
+    此时，fork 会把主线程的内存拷贝一份给 bgrewriteaof 子进程，这里面就包含了数据库的最新数据。<br>
+    然后，bgrewriteaof 子进程就可以在不影响主线程的情况下，逐一把拷贝的数据写成操作，记入重写日志。<br>
+两处日志：
+    因为主线程未阻塞，仍然可以处理新来的操作。<br>
+    此时，如果有写操作，第一处日志就是指正在使用的 AOF 日志，Redis 会把这个操作写到它的缓冲区。
+    这样一来，即使宕机了，这个 AOF 日志的操作仍然是齐全的，可以用于恢复。<br>
+    而第二处日志，
+    就是指新的 AOF 重写日志。这个操作也会被写到重写日志的缓冲区。
+    这样，重写日志也不会丢失最新的操作。
+    等到拷贝数据的所有操作记录重写完成后，重写日志记录的这些最新操作也会写入新的 AOF 文件，以保证数据库最新状态的记录。<br>
+    此时，我们就可以用新的 AOF 文件替代旧文件了。
+    
+总结来说，每次 AOF 重写时，Redis 会先执行一个内存拷贝，用于重写；
+然后，使用两个日志保证在重写过程中，新写入的数据不会丢失。
+而且，因为 Redis 采用额外的线程进行数据重写，所以，这个过程并不会阻塞主线程。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%203_5.jpg" width="500">
+</div><br>
+
+<ul>
+<li>对于开启 HugePages 的操作系统，父进程申请内存时阻塞的概率将会大大提高，Hugepages 在实际使用 Redis 并需要持久化时是建议关掉的。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>极客时间 - 《Redis核心技术与实战》 学习笔记 4</title>
+    <url>/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4-%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4/</url>
+    <content><![CDATA[<h3 id="内存快照：宕机后，Redis如何实现快速恢复？"><a href="#内存快照：宕机后，Redis如何实现快速恢复？" class="headerlink" title="内存快照：宕机后，Redis如何实现快速恢复？"></a>内存快照：宕机后，Redis如何实现快速恢复？</h3><hr>
+<ul>
+<li>Redis 提供了两个命令来生成 RDB 文件，分别是 save 和 bgsave。</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+save：在主线程中执行，会导致阻塞；
+bgsave：创建一个子进程，专门用于写入 RDB 文件，避免了主线程的阻塞，这也是 Redis RDB 文件生成的默认配置。
+</pre>
+
+<ul>
+<li>Redis 就会借助操作系统提供的写时复制技术（Copy-On-Write, COW），在执行快照的同时，正常处理写操作。</li>
+</ul>
+<span id="more"></span>
+
+<pre style="font-size:0.9em; color:#666666;">
+简单来说，bgsave 子进程是由主线程 fork 生成的，可以共享主线程的所有内存数据。<br>
+bgsave 子进程运行后，开始读取主线程的内存数据，并把它们写入 RDB 文件。<br>
+此时，如果主线程对这些数据也都是读操作（例如图中的键值对 A），那么，主线程和 bgsave 子进程相互不影响。<br>
+但是，如果主线程要修改一块数据（例如图中的键值对 C），那么，这块数据就会被复制一份，生成该数据的副本。<br>
+然后，bgsave 子进程会把这个副本数据写入 RDB 文件，而在这个过程中，主线程仍然可以直接修改原来的数据。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%204_1.jpg" width="500">
+</div><br>
+
+<ul>
+<li>如果频繁地执行全量快照，也会带来两方面的开销。</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+一方面，频繁将全量数据写入磁盘，会给磁盘带来很大压力，多个快照竞争有限的磁盘带宽，
+前一个快照还没有做完，后一个又开始做了，容易造成恶性循环。<br>
+另一方面，bgsave 子进程需要通过 fork 操作从主线程创建出来。<br>
+虽然，子进程在创建后不会再阻塞主线程，但是，fork 这个创建过程本身会阻塞主线程，
+而且主线程的内存越大，阻塞时间越长。<br>
+如果频繁 fork 出 bgsave 子进程，这就会频繁阻塞主线程了。
+</pre>
+
+<ul>
+<li>Redis 4.0 中提出了一个混合使用 AOF 日志和内存快照的方法。</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+简单来说，内存快照以一定的频率执行，在两次快照之间，使用 AOF 日志记录这期间的所有命令操作。<br>
+这样一来，快照不用很频繁地执行，这就避免了频繁 fork 对主线程的影响。<br>
+而且，AOF 日志也只用记录两次快照间的操作，也就是说，不需要记录所有操作了，
+因此，就不会出现文件过大的情况了，也可以避免重写开销。<br>
+如下图所示，T1 和 T2 时刻的修改，用 AOF 日志记录，
+等到第二次做全量快照时，就可以清空 AOF 日志，因为此时的修改都已经记录到快照中了，恢复时就不再用日志了。
+</pre>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E6%9E%81%E5%AE%A2%E6%97%B6%E9%97%B4%20-%20%E3%80%8ARedis%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%AE%9E%E6%88%98%E3%80%8B%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%204_2.jpg" width="500">
+</div><br>
+
+<ul>
+<li>RDB 优势在于，可以快速恢复数据库，也就是只需要把 RDB 文件直接读入内存，避免了 AOF 需要顺序、逐一重新执行操作命令带来的低效性能问题。缺点是频繁快照很耗资源<br>
+<br></li>
+<li>三点建议</li>
+</ul>
+<pre style="font-size:0.9em; color:#666666;">
+1. 数据不能丢失时，内存快照和 AOF 的混合使用是一个很好的选择；<br>
+2. 如果允许分钟级别的数据丢失，可以只使用 RDB；<br>
+3. 如果只用 AOF，优先使用 everysec 的配置选项，因为它在可靠性和性能之间取了一个平衡。
+</pre>
+
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>递归反转栈</title>
+    <url>/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E6%A0%88/</url>
+    <content><![CDATA[<h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>翻转栈的所有元素，例如输入栈 {1,2,3,4,5}，其中 1 处在栈顶，翻转之后的栈为 {5,4,3,2,1}，其中，5 处在栈顶，注意使用递归</p>
+<h3 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h3><p>递归算法不需要考虑中间过程，上一层的递归可以直接使用下一层的递归结果，即假设下一层已经完成了我们的要求就行了，最后只需要考虑最后一层递归退出的条件就行了</p>
+<span id="more"></span>
+
+<div style="text-align:center">
+    <img data-src="https://yxd-blog.oss-cn-shanghai.aliyuncs.com/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E6%A0%88.png" width="2000">
+</div><br>
+
+<p>递归函数结束的条件：是当栈为空或者栈里只有一个元素的时候，return。</p>
+<h3 id="解题代码"><a href="#解题代码" class="headerlink" title="解题代码"></a>解题代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">reverse_stack</span>(<span class="params">s</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(s) == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    temp1 = s.pop()</span><br><span class="line">    reverse_stack(s)</span><br><span class="line">    temp2 = s.pop()</span><br><span class="line">    reverse_stack(s)</span><br><span class="line">    s.append(temp1)</span><br><span class="line">    reverse_stack(s)</span><br><span class="line">    s.append(temp2)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    stack = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</span><br><span class="line">    reverse_stack(stack)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;翻转后出栈的顺序为：&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(stack)</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>DS&amp;A</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>DS&amp;A</tag>
+      </tags>
+  </entry>
+</search>
