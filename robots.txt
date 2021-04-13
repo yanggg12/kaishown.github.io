@@ -9,5 +9,5 @@ Disallow: /vendors/
 Disallow: /fonts/
 Disallow: /fancybox/
 
-Sitemap: https://yxudong.github.io/sitemap.xml
-Sitemap: https://yxudong.github.io/baidusitemap.xml
+Sitemap: https://kaishown.github.io/sitemap.xml
+Sitemap: https://kaishown.github.io/baidusitemap.xml
